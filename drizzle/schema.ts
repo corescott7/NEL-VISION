@@ -1,17 +1,7 @@
 import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
-/**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
- */
 export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
@@ -22,7 +12,54 @@ export const users = mysqlTable("users", {
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
 });
 
+export const channels = mysqlTable("channels", {
+  id: int("id").autoincrement().primaryKey(),
+  ownerId: int("ownerId").notNull(),
+  handle: varchar("handle", { length: 64 }).notNull().unique(),
+  displayName: varchar("displayName", { length: 120 }).notNull(),
+  bio: text("bio"),
+  avatarUrl: text("avatarUrl"),
+  bannerUrl: text("bannerUrl"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const videos = mysqlTable("videos", {
+  id: int("id").autoincrement().primaryKey(),
+  channelId: int("channelId").notNull(),
+  title: varchar("title", { length: 180 }).notNull(),
+  description: text("description"),
+  thumbnailUrl: text("thumbnailUrl"),
+  playbackUrl: text("playbackUrl"),
+  visibility: mysqlEnum("visibility", ["draft", "unlisted", "public"]).default("draft").notNull(),
+  durationSeconds: int("durationSeconds"),
+  viewCount: int("viewCount").default(0).notNull(),
+  publishedAt: timestamp("publishedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const channelFollows = mysqlTable("channelFollows", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  channelId: int("channelId").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const creatorEarnings = mysqlTable("creatorEarnings", {
+  id: int("id").autoincrement().primaryKey(),
+  channelId: int("channelId").notNull(),
+  eligibleRevenueCents: int("eligibleRevenueCents").default(0).notNull(),
+  creatorShareBps: int("creatorShareBps").default(6500).notNull(),
+  creatorAmountCents: int("creatorAmountCents").default(0).notNull(),
+  periodStart: timestamp("periodStart").notNull(),
+  periodEnd: timestamp("periodEnd").notNull(),
+  status: mysqlEnum("status", ["estimated", "finalized", "paid"]).default("estimated").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
-
-// TODO: Add your tables here
+export type Channel = typeof channels.$inferSelect;
+export type Video = typeof videos.$inferSelect;
+export type CreatorEarning = typeof creatorEarnings.$inferSelect;
