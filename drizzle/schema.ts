@@ -46,6 +46,26 @@ export const channelFollows = mysqlTable("channelFollows", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const advertiserProfiles = mysqlTable("advertiserProfiles", {
+  id: int("id").autoincrement().primaryKey(),
+  ownerId: int("ownerId").notNull(),
+  companyName: varchar("companyName", { length: 160 }).notNull(),
+  websiteUrl: text("websiteUrl"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const adPlacements = mysqlTable("adPlacements", {
+  id: int("id").autoincrement().primaryKey(),
+  advertiserId: int("advertiserId").notNull(),
+  videoId: int("videoId").notNull(),
+  campaignName: varchar("campaignName", { length: 160 }).notNull(),
+  status: mysqlEnum("status", ["draft", "requested", "approved", "active", "paused"]).default("draft").notNull(),
+  budgetCents: int("budgetCents").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
 export const creatorEarnings = mysqlTable("creatorEarnings", {
   id: int("id").autoincrement().primaryKey(),
   channelId: int("channelId").notNull(),
@@ -63,3 +83,5 @@ export type InsertUser = typeof users.$inferInsert;
 export type Channel = typeof channels.$inferSelect;
 export type Video = typeof videos.$inferSelect;
 export type CreatorEarning = typeof creatorEarnings.$inferSelect;
+export type AdvertiserProfile = typeof advertiserProfiles.$inferSelect;
+export type AdPlacement = typeof adPlacements.$inferSelect;

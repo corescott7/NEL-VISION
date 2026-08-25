@@ -25,3 +25,12 @@
 - [x] Add tRPC procedures and DB helpers for channels, follows, videos, uploads, and publishing
 - [x] Implement managed-storage upload and publish flows
 - [x] Replace studio placeholder metrics with persisted analytics
+
+## Advertiser access and brighter brand update
+
+- [x] Add explicit creator login and advertiser login role paths
+- [x] Add advertiser portal for selecting videos and configuring ad placements
+- [x] Add advertiser and ad-placement data vocabulary
+- [x] Shift the primary web presentation toward a white-led red-black-silver system
+- [x] Replace the displayed logo asset with a verified transparent-background version
+- [x] Test advertiser and creator entry states, logo rendering, and responsive contrast

@@ -25,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 const categories = ["For you", "Documentary", "Music", "Learning", "Gaming", "Culture", "Business"];
 
@@ -76,7 +77,7 @@ const features = [
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <div className={compact ? "brand brand-compact" : "brand"}>
-      <img src="/manus-storage/nel-a-vision-official-logo_9f6daf20.png" alt="NEL A VISION — Video Unleashed" />
+      <img src="/manus-storage/nel-a-vision-official-logo-transparent_76d9162f.png" alt="NEL A VISION — Video Unleashed" />
     </div>
   );
 }
@@ -128,7 +129,7 @@ export default function Home() {
           {query && <button className="clear-search" onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button>}
         </div>
         <div className="topbar-actions">
-          <button className="text-action studio-action" onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button>
+          <button className="text-action studio-action" onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button><Link href="/advertiser" className="text-action advertiser-action"><DollarSign size={17} /> Advertisers</Link>
           <button className="icon-button" aria-label="Notifications"><Bell size={19} /></button>
           {isAuthenticated ? (
             <button className="profile-chip" onClick={logout}><span className="avatar"><UserRound size={16} /></span><span>{user?.name || "Account"}</span></button>
@@ -141,7 +142,7 @@ export default function Home() {
       {showMenu && <div className="mobile-menu">
         <a href="#discover"><Compass size={17} /> Discover</a>
         <a href="#following"><Users size={17} /> Following</a>
-        <button onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button>
+        <button onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button><a href="/advertiser"><DollarSign size={17} /> Advertisers</a>
       </div>}
 
       <main>
