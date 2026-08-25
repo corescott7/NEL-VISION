@@ -34,3 +34,7 @@
 - [x] Shift the primary web presentation toward a white-led red-black-silver system
 - [x] Replace the displayed logo asset with a verified transparent-background version
 - [x] Test advertiser and creator entry states, logo rendering, and responsive contrast
+
+## Logo clipping fix
+
+- [x] Ensure the complete NEL A VISION wordmark, including the final N, is visible in desktop and mobile headers
