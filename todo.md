@@ -38,3 +38,9 @@
 ## Logo clipping fix
 
 - [x] Ensure the complete NEL A VISION wordmark, including the final N, is visible in desktop and mobile headers
+
+## Homepage marketing video
+
+- [x] Upload the generated NEL A VISION marketing video to managed project storage
+- [x] Add a responsive homepage promotional video section with controls and fallback copy
+- [x] Verify the video section on desktop and mobile and save a checkpoint

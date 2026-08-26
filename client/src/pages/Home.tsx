@@ -169,7 +169,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="category-row" aria-label="Video categories">
+        <section className="marketing-video" aria-labelledby="marketing-video-title"><div className="marketing-video-copy"><span className="section-kicker"><Play size={14} /> NEL A VISION / 001</span><h2 id="marketing-video-title">Your vision.<br/><em>In motion.</em></h2><p>Meet the creator-first video platform built for work worth watching, channels worth following, and a clearer share of the upside.</p><span className="marketing-video-note">30-second brand film · sound on</span></div><div className="marketing-video-player"><video controls preload="metadata" playsInline aria-label="NEL A VISION 30-second marketing video"><source src="/manus-storage/marketing-shot-01_9c8641a7.mp4" type="video/mp4" />Your browser does not support embedded video. Download the NEL A VISION brand film to view it.</video><span className="marketing-video-caption">VIDEO UNLEASHED <i>/</i> CREATED FOR THE NEXT FRAME</span></div></section>\n\n        <section className="category-row" aria-label="Video categories">
           {categories.map((category) => <button key={category} className={activeCategory === category ? "category active" : "category"} onClick={() => setActiveCategory(category)}>{category}</button>)}
           <button className="category-more"><Grid2X2 size={15} /> Browse all</button>
         </section>

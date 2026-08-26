@@ -8,3 +8,7 @@ The homepage and advertiser portal were visually checked at 1280×720 after shif
 ## Logo clipping fix
 
 After removing the scale-up transform and using full image containment, desktop and mobile screenshots show the complete **NEL A VISION** wordmark, including the final **N**, in the homepage, advertiser portal, and creator login header treatments. The wide transparent lockup now fits inside its header box without right-edge clipping.
+
+## Homepage marketing video verification
+
+The uploaded clip is referenced from managed storage at `/manus-storage/marketing-shot-01_9c8641a7.mp4`. The homepage video section was verified at 1280×720 and 390×844. It presents native controls, scales responsively, and sits between the hero and discovery feed without breaking the white-led layout.
