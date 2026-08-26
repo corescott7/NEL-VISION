@@ -44,3 +44,11 @@
 - [x] Upload the generated NEL A VISION marketing video to managed project storage
 - [x] Add a responsive homepage promotional video section with controls and fallback copy
 - [x] Verify the video section on desktop and mobile and save a checkpoint
+
+## Monetization eligibility update
+
+- [x] Ensure the earnings ledger assigns 65% of eligible platform revenue to the creator
+- [x] Define qualifying content as published videos or Shorts with duration greater than 7 seconds
+- [x] Make monetization available after the first 10 qualifying published videos or Shorts
+- [x] Show progress, eligibility status, and the 65% creator allocation in Creator Studio
+- [x] Add tests for qualification thresholds, duration rule, and creator-share calculation

@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { calculateInitialCreatorShare, INITIAL_CREATOR_SHARE_BPS } from "./earnings";
+import {
+  calculateInitialCreatorShare,
+  getMonetizationEligibility,
+  INITIAL_CREATOR_SHARE_BPS,
+  isQualifyingContent,
+} from "./earnings";
 
-describe("calculateInitialCreatorShare", () => {
+describe("NEL A VISION monetization model", () => {
   it("applies the initial 65% creator share", () => {
     expect(calculateInitialCreatorShare(10000)).toBe(6500);
     expect(INITIAL_CREATOR_SHARE_BPS).toBe(6500);
@@ -14,5 +19,18 @@ describe("calculateInitialCreatorShare", () => {
   it("rejects invalid revenue and share inputs", () => {
     expect(() => calculateInitialCreatorShare(-1)).toThrow();
     expect(() => calculateInitialCreatorShare(100, 10001)).toThrow();
+  });
+
+  it("requires content to be longer than 7 seconds", () => {
+    expect(isQualifyingContent(7)).toBe(false);
+    expect(isQualifyingContent(7.1)).toBe(false);
+    expect(isQualifyingContent(8)).toBe(true);
+    expect(isQualifyingContent(null)).toBe(false);
+  });
+
+  it("opens monetization after the first 10 qualifying published uploads", () => {
+    expect(getMonetizationEligibility(9)).toMatchObject({ eligible: false, remaining: 1 });
+    expect(getMonetizationEligibility(10)).toMatchObject({ eligible: true, remaining: 0 });
+    expect(getMonetizationEligibility(12)).toMatchObject({ eligible: true, remaining: 0 });
   });
 });
