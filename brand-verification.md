@@ -16,3 +16,15 @@ The uploaded clip is referenced from managed storage at `/manus-storage/marketin
 ## Creator flow verification
 
 Creator Studio now has a direct route from homepage creator actions. OAuth state preserves `/studio` for creator sign-in and `/advertiser` for advertiser sign-in, with internal-path sanitization. Creator Studio shows a real upload form with browser metadata validation, managed-storage upload, draft video record creation, and explicit monetization steps: publish 2 Shorts under 30 seconds at exactly 9:16, then 1 Long video over 30 seconds in any ratio. Desktop and mobile Studio layouts were visually verified.
+
+## Video library verification
+
+Creator Studio now queries owner-scoped videos and shows saved records in a dedicated Shorts & Long videos library with draft/public status, metadata, preview, and publish actions. The library is responsive and was verified at desktop and mobile breakpoints. Upload success refreshes both the library and metrics query so the new draft appears immediately.
+
+## Signed-in upload verification procedure
+
+To verify the user’s first upload end to end, sign in as a creator, open Creator Studio, choose a valid video, enter a title, and select **Upload draft**. Confirm the success message and that the new record appears under **Your Video Library** with DRAFT status. Refresh the page and confirm the same record remains visible. Select **Preview** to confirm playback, then select **Publish** and confirm the status changes to PUBLIC.
+
+## Final library layout verification
+
+The creator library, upload form, empty state, status areas, publish controls, and monetization checklist were rechecked in full-page desktop and mobile screenshots. The monetization step descriptions now align correctly instead of wrapping into the numbered marker column.

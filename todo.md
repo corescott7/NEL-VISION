@@ -63,3 +63,17 @@
 - [x] Replace the prior 10-upload monetization rule in shared logic, persisted metrics, and UI
 - [x] Add clear step-by-step monetization instructions for creators
 - [x] Add tests and responsive verification for creator access, uploads, and monetization progress
+
+## Creator video library fix
+
+- [x] Add owner-scoped video-library query for uploaded Shorts and Long videos
+- [x] Make uploaded records visible immediately after a successful upload
+- [x] Add draft/public status, type, duration, ratio, playback, and publish controls
+- [x] Add clear empty, loading, error, and success states for the library
+- [x] Verify the first upload persists across refresh and appears on desktop and mobile
+
+## Library reliability follow-up
+
+- [x] Add a dedicated library-load error state with retry guidance
+- [x] Add publish-action error feedback and retry behavior
+- [x] Document the manual end-to-end upload and refresh verification step for the signed-in creator account
