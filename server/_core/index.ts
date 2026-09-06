@@ -5,6 +5,8 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
+import { createChannel, createVideo, getChannelByOwnerId } from "../db";
+import { storagePut } from "../storage";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -36,6 +38,22 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+  app.post("/api/creator/upload", async (req, res) => {
+    try {
+      const user = await (await import("./context")).createContext({ req, res } as any).then((ctx) => ctx.user);
+      if (!user) { res.status(401).json({ error: "creator login required" }); return; }
+      const { fileName, contentType, base64, title, description, durationSeconds, width, height } = req.body ?? {};
+      if (typeof base64 !== "string" || typeof fileName !== "string" || typeof title !== "string") { res.status(400).json({ error: "fileName, title, and base64 video data are required" }); return; }
+      const bytes = Buffer.from(base64, "base64");
+      if (!bytes.length || bytes.length > 50 * 1024 * 1024) { res.status(400).json({ error: "Video must be larger than 0 and no more than 50 MB" }); return; }
+      let channel = await getChannelByOwnerId(user.id);
+      if (!channel) channel = await createChannel(user.id, `creator-${user.id}`, user.name || "Creator", "NEL A VISION creator channel");
+      if (!channel) { res.status(500).json({ error: "Could not create creator channel" }); return; }
+      const stored = await storagePut(`creator-${user.id}/${Date.now()}-${fileName.replace(/[^a-zA-Z0-9._-]/g, "-")}`, bytes, contentType || "video/mp4");
+      const video = await createVideo(channel.id, title, description, stored.url, undefined, typeof durationSeconds === "number" ? durationSeconds : undefined, typeof width === "number" ? width : undefined, typeof height === "number" ? height : undefined);
+      res.json({ video, playbackUrl: stored.url, width, height });
+    } catch (error) { console.error("[Creator Upload] Failed", error); res.status(500).json({ error: "Upload failed" }); }
+  });
   // tRPC API
   app.use(
     "/api/trpc",

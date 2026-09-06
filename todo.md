@@ -52,3 +52,14 @@
 - [x] Make monetization available after the first 10 qualifying published videos or Shorts
 - [x] Show progress, eligibility status, and the 65% creator allocation in Creator Studio
 - [x] Add tests for qualification thresholds, duration rule, and creator-share calculation
+
+## Creator access, uploads, and revised monetization
+
+- [x] Fix creator sign-in routing so creators can reliably reach Creator Studio
+- [x] Make the Creator Studio upload entry point functional and validate upload metadata
+- [x] Define Shorts as under 30 seconds and exactly 9:16
+- [x] Define Long videos as over 30 seconds in any aspect ratio
+- [x] Require 2 qualifying Shorts and 1 qualifying Long video for monetization
+- [x] Replace the prior 10-upload monetization rule in shared logic, persisted metrics, and UI
+- [x] Add clear step-by-step monetization instructions for creators
+- [x] Add tests and responsive verification for creator access, uploads, and monetization progress

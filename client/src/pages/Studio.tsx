@@ -1,14 +1,58 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, BarChart3, Check, DollarSign, Film, Upload, Users } from "lucide-react";
+import { ArrowLeft, BarChart3, Check, DollarSign, Film, Info, Upload, Users } from "lucide-react";
+import { useRef, useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { getMonetizationEligibility } from "../../../shared/earnings";
+import { classifyContent, getMonetizationEligibility } from "../../../shared/earnings";
 
+function readVideoMetadata(file: File) {
+  return new Promise<{ duration: number; width: number; height: number }>((resolve, reject) => {
+    const video = document.createElement("video");
+    const url = URL.createObjectURL(file);
+    video.preload = "metadata";
+    video.onloadedmetadata = () => { URL.revokeObjectURL(url); resolve({ duration: video.duration, width: video.videoWidth, height: video.videoHeight }); };
+    video.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Could not read video metadata")); };
+    video.src = url;
+  });
+}
+
+function fileToBase64(file: File) {
+  return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",")[1] || ""); reader.onerror = () => reject(reader.error); reader.readAsDataURL(file); });
+}
 
 export default function Studio() {
-  const { user } = useAuth();
-  const { data: metrics } = trpc.studio.metrics.useQuery(undefined, { enabled: Boolean(user) });
-  const monetization = getMonetizationEligibility(metrics?.qualifyingPublishedCount ?? 0);
-  return <div className="app-shell"><header className="topbar"><div className="topbar-left"><Link href="/" className="icon-button" aria-label="Back to discovery"><ArrowLeft size={20}/></Link><div className="brand"><img src="/manus-storage/nel-a-vision-official-logo-transparent_76d9162f.png" alt="NEL A VISION" /></div></div><div className="topbar-actions"><span className="section-kicker">CREATOR STUDIO</span></div></header><main className="studio-page"><div className="studio-heading"><div><span className="section-kicker"><Upload size={14}/> YOUR WORKSPACE</span><h1>Make the next<br/><em>great thing.</em></h1><p>Publish with clarity. Understand your audience. Keep the economics visible.</p></div><Button className="primary-cta"><Upload size={16}/> Upload video</Button></div><div className="studio-metrics"><div><BarChart3 size={18}/><span>Views</span><strong>—</strong><small>Awaiting published work</small></div><div><Users size={18}/><span>Followers</span><strong>—</strong><small>Build your audience</small></div><div><DollarSign size={18}/><span>Creator share</span><strong>65%</strong><small>Initial eligible-revenue model</small></div></div><div className="studio-columns"><section className="studio-card"><div className="card-heading"><div><span className="section-kicker"><Film size={14}/> CONTENT</span><h2>Your videos</h2></div><button className="view-all">Manage library</button></div><div className="studio-empty"><Upload size={22}/><h3>No published videos yet</h3><p>Upload a video to start shaping your channel.</p><Button className="outline-light"><Upload size={15}/> Upload first video</Button></div></section><section className="studio-card earnings-card"><div className="card-heading"><div><span className="section-kicker"><DollarSign size={14}/> EARNINGS</span><h2>Stay in the know</h2></div><Check size={18} color="#d1a350"/></div><div className="earnings-summary"><strong>65<span>%</span></strong><p>Creator allocation of eligible platform revenue once monetization is unlocked.</p></div><div className="earnings-status"><span className="status-dot"/> {monetization.eligible ? "Monetization available" : `${monetization.remaining} qualifying uploads remaining`} <span>Initial model</span></div><div className="monetization-progress"><div><span>Qualifying published uploads</span><strong>{monetization.qualifyingPublishedCount}/{monetization.requiredPublishedCount}</strong></div><div className="progress-track"><span style={{ width: `${(monetization.qualifyingPublishedCount / monetization.requiredPublishedCount) * 100}%` }} /></div></div><small>Qualifying content means a published video or Short longer than 7 seconds. Once you reach 10 qualifying uploads, the initial monetization model makes 65% of eligible platform revenue payable to the creator. Final eligibility, deductions, payment timing, and payout rules will be defined before launch.</small></section></div></main></div>;
+  const { user, isAuthenticated } = useAuth();
+  const { data: metrics, refetch } = trpc.studio.metrics.useQuery(undefined, { enabled: Boolean(user) });
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [metadata, setMetadata] = useState<{ duration: number; width: number; height: number } | null>(null);
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const monetization = getMonetizationEligibility(metrics?.shortsCount ?? 0, metrics?.longVideosCount ?? 0);
+  const classification = metadata ? classifyContent(metadata.duration, metadata.width, metadata.height) : null;
+
+  const chooseFile = async (nextFile: File | undefined) => {
+    if (!nextFile) return;
+    setMessage("");
+    try { const nextMetadata = await readVideoMetadata(nextFile); setFile(nextFile); setMetadata(nextMetadata); } catch { setMessage("We could not read this video. Please choose a valid video file."); }
+  };
+
+  const upload = async () => {
+    if (!file || !metadata || !title.trim()) { setMessage("Choose a video, enter a title, and try again."); return; }
+    if (!classification?.qualifies) { setMessage(classification?.type === "short" ? "Shorts must be under 30 seconds and exactly 9:16." : "Long videos must be over 30 seconds. A video exactly 30 seconds is not eligible."); return; }
+    setBusy(true); setMessage("");
+    try {
+      const base64 = await fileToBase64(file);
+      const response = await fetch("/api/creator/upload", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fileName: file.name, contentType: file.type, base64, title: title.trim(), description, durationSeconds: metadata.duration, width: metadata.width, height: metadata.height }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Upload failed");
+      setMessage("Upload saved as a draft. Publish it from your video library when you are ready."); setFile(null); setMetadata(null); setTitle(""); setDescription(""); if (fileInput.current) fileInput.current.value = ""; refetch();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Upload failed. Please try again."); }
+    finally { setBusy(false); }
+  };
+
+  return <div className="app-shell"><header className="topbar"><div className="topbar-left"><Link href="/" className="icon-button" aria-label="Back to discovery"><ArrowLeft size={20}/></Link><div className="brand"><img src="/manus-storage/nel-a-vision-official-logo-transparent_76d9162f.png" alt="NEL A VISION" /></div></div><div className="topbar-actions"><span className="section-kicker">CREATOR STUDIO</span></div></header><main className="studio-page"><div className="studio-heading"><div><span className="section-kicker"><Upload size={14}/> YOUR WORKSPACE</span><h1>Make the next<br/><em>great thing.</em></h1><p>Publish with clarity. Understand your audience. Keep the economics visible.</p></div>{!isAuthenticated && <Link href="/login/creator" className="primary-cta"><Upload size={16}/> Sign in as creator</Link>}</div>{isAuthenticated ? <><section className="upload-card"><div className="card-heading"><div><span className="section-kicker"><Upload size={14}/> PUBLISH A VIDEO</span><h2>Start with your next upload</h2></div><Info size={18}/></div><p className="upload-help">Shorts are under 30 seconds and must be 9:16. Long videos are over 30 seconds and may use any ratio.</p><div className="upload-fields"><label>Title<input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Give your video a clear title" /></label><label>Description<textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Tell viewers what this is about" rows={3} /></label></div><input ref={fileInput} type="file" accept="video/*" hidden onChange={(event) => chooseFile(event.target.files?.[0])}/><div className="upload-actions"><Button className="outline-light" onClick={() => fileInput.current?.click()}><Film size={15}/> {file ? file.name : "Choose video file"}</Button>{metadata && <span className={classification?.qualifies ? "upload-valid" : "upload-invalid"}>{Math.round(metadata.duration)}s · {metadata.width}:{metadata.height} · {classification?.type === "short" ? "Short" : classification?.type === "long" ? "Long" : "Not eligible"}</span>}<Button className="primary-cta" disabled={busy} onClick={upload}><Upload size={15}/> {busy ? "Uploading…" : "Upload draft"}</Button></div>{message && <p className="upload-message" role="status">{message}</p>}</section><div className="studio-metrics"><div><BarChart3 size={18}/><span>Views</span><strong>{metrics?.views ?? 0}</strong><small>Across published work</small></div><div><Users size={18}/><span>Followers</span><strong>{metrics?.followers ?? 0}</strong><small>Build your audience</small></div><div><DollarSign size={18}/><span>Creator share</span><strong>65%</strong><small>Of eligible platform revenue</small></div></div><section className="studio-card earnings-card monetization-card"><div className="card-heading"><div><span className="section-kicker"><DollarSign size={14}/> HOW TO GET MONETIZED</span><h2>{monetization.eligible ? "You are eligible" : "Complete your starter set"}</h2></div><Check size={18} color="#d1a350"/></div><p className="monetization-intro">Follow these three steps to unlock the initial monetization model:</p><ol className="monetization-steps"><li><strong>Publish Short 1</strong><span>Under 30 seconds, exactly 9:16.</span></li><li><strong>Publish Short 2</strong><span>Under 30 seconds, exactly 9:16.</span></li><li><strong>Publish 1 Long video</strong><span>Over 30 seconds; any aspect ratio is accepted.</span></li></ol><div className="requirements-grid"><div className={monetization.shortsCount >= 2 ? "requirement complete" : "requirement"}><strong>{Math.min(monetization.shortsCount, 2)}/2</strong><span>Shorts</span><small>Under 30s · 9:16</small></div><div className={monetization.longVideosCount >= 1 ? "requirement complete" : "requirement"}><strong>{Math.min(monetization.longVideosCount, 1)}/1</strong><span>Long video</span><small>Over 30s · any ratio</small></div></div><div className="earnings-summary"><strong>65<span>%</span></strong><p>Creator allocation of eligible platform revenue once requirements are complete.</p></div><small>Final payment timing, deductions, and payout rules will be published before launch. The 65% figure is the initial creator-share model.</small></section></> : <section className="studio-card"><h2>Sign in to upload</h2><p>Your creator account unlocks uploads, publishing, progress tracking, and the monetization checklist.</p><Link href="/login/creator" className="primary-cta">Continue as creator</Link></section>}</main></div>;
 }

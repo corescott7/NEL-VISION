@@ -12,3 +12,7 @@ After removing the scale-up transform and using full image containment, desktop 
 ## Homepage marketing video verification
 
 The uploaded clip is referenced from managed storage at `/manus-storage/marketing-shot-01_9c8641a7.mp4`. The homepage video section was verified at 1280×720 and 390×844. It presents native controls, scales responsively, and sits between the hero and discovery feed without breaking the white-led layout.
+
+## Creator flow verification
+
+Creator Studio now has a direct route from homepage creator actions. OAuth state preserves `/studio` for creator sign-in and `/advertiser` for advertiser sign-in, with internal-path sanitization. Creator Studio shows a real upload form with browser metadata validation, managed-storage upload, draft video record creation, and explicit monetization steps: publish 2 Shorts under 30 seconds at exactly 9:16, then 1 Long video over 30 seconds in any ratio. Desktop and mobile Studio layouts were visually verified.

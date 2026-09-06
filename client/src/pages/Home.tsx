@@ -129,7 +129,7 @@ export default function Home() {
           {query && <button className="clear-search" onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button>}
         </div>
         <div className="topbar-actions">
-          <button className="text-action studio-action" onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button><Link href="/advertiser" className="text-action advertiser-action"><DollarSign size={17} /> Advertisers</Link>
+          <Link href="/studio" className="text-action studio-action"><Upload size={17} /> Creator Studio</Link><Link href="/advertiser" className="text-action advertiser-action"><DollarSign size={17} /> Advertisers</Link>
           <button className="icon-button" aria-label="Notifications"><Bell size={19} /></button>
           {isAuthenticated ? (
             <button className="profile-chip" onClick={logout}><span className="avatar"><UserRound size={16} /></span><span>{user?.name || "Account"}</span></button>
@@ -142,7 +142,7 @@ export default function Home() {
       {showMenu && <div className="mobile-menu">
         <a href="#discover"><Compass size={17} /> Discover</a>
         <a href="#following"><Users size={17} /> Following</a>
-        <button onClick={() => setShowStudio(true)}><Upload size={17} /> Creator Studio</button><a href="/advertiser"><DollarSign size={17} /> Advertisers</a>
+        <Link href="/studio"><Upload size={17} /> Creator Studio</Link><a href="/advertiser"><DollarSign size={17} /> Advertisers</a>
       </div>}
 
       <main>
@@ -152,7 +152,7 @@ export default function Home() {
             <h1>Make your <em>vision</em><br />impossible to miss.</h1>
             <p className="hero-lede">A calmer, more considered home for video. Discover work worth watching, and build a channel that rewards the people behind it.</p>
             <div className="hero-actions">
-              <Button className="primary-cta" onClick={() => setShowStudio(true)}><Plus size={17} /> Start creating</Button>
+              <Link href="/studio" className="primary-cta"><Plus size={17} /> Start creating</Link>
               <a href="#explore" className="secondary-cta">Explore the feed <ArrowUpRight size={16} /></a>
             </div>
             <div className="hero-note"><Check size={15} /> Initial model: creators receive 65% of eligible platform revenue.</div>
@@ -181,7 +181,7 @@ export default function Home() {
         </section>
 
         <section className="creator-banner" id="following">
-          <div className="creator-banner-copy"><span className="section-kicker"><Users size={14} /> Built for the people behind the play button</span><h2>Your work deserves<br /><em>more of the upside.</em></h2><p>Follow the creators you care about. Publish your next chapter. See exactly how the initial earnings model is calculated.</p><button className="outline-light" onClick={() => setShowStudio(true)}>Open creator studio <ArrowUpRight size={16} /></button></div>
+          <div className="creator-banner-copy"><span className="section-kicker"><Users size={14} /> Built for the people behind the play button</span><h2>Your work deserves<br /><em>more of the upside.</em></h2><p>Follow the creators you care about. Publish your next chapter. See exactly how the initial earnings model is calculated.</p><Link href="/studio" className="outline-light">Open creator studio <ArrowUpRight size={16} /></Link></div>
           <div className="earnings-panel"><div className="earnings-panel-top"><span>INITIAL EARNINGS MODEL</span><DollarSign size={18} /></div><div className="earnings-number">65<span>%</span></div><div className="earnings-bar"><span /></div><div className="earnings-legend"><span><i className="legend-creator" /> Creator share</span><span><i className="legend-platform" /> Platform operations</span></div><p>This is an initial model for eligible platform revenue. Final payment, eligibility, deductions, and payout rules will be defined before launch.</p></div>
         </section>
       </main>

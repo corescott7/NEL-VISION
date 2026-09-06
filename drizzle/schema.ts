@@ -33,6 +33,8 @@ export const videos = mysqlTable("videos", {
   playbackUrl: text("playbackUrl"),
   visibility: mysqlEnum("visibility", ["draft", "unlisted", "public"]).default("draft").notNull(),
   durationSeconds: int("durationSeconds"),
+  width: int("width"),
+  height: int("height"),
   viewCount: int("viewCount").default(0).notNull(),
   publishedAt: timestamp("publishedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
