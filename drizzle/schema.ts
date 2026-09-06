@@ -29,6 +29,7 @@ export const videos = mysqlTable("videos", {
   channelId: int("channelId").notNull(),
   title: varchar("title", { length: 180 }).notNull(),
   description: text("description"),
+  hashtags: text("hashtags"),
   thumbnailUrl: text("thumbnailUrl"),
   playbackUrl: text("playbackUrl"),
   visibility: mysqlEnum("visibility", ["draft", "unlisted", "public"]).default("draft").notNull(),

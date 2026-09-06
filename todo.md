@@ -77,3 +77,17 @@
 - [x] Add a dedicated library-load error state with retry guidance
 - [x] Add publish-action error feedback and retry behavior
 - [x] Document the manual end-to-end upload and refresh verification step for the signed-in creator account
+
+## Video deletion and playback metadata
+
+- [x] Add owner-only deletion for each video in a creator's library
+- [x] Require confirmation and provide clear success or error feedback when deleting
+- [x] Add hashtags to video upload and persisted video metadata
+- [x] Show video descriptions and hashtags on the watch page
+- [x] Show hashtags and descriptions clearly in the creator library
+- [x] Test deletion authorization, metadata persistence, and responsive playback presentation
+
+## Metadata persistence verification
+
+- [x] Test that creator descriptions and normalized hashtags are included in persisted video records
+- [x] Add a rolled-back database integration test that inserts and reads description and hashtag metadata

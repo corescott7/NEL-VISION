@@ -28,3 +28,11 @@ To verify the user’s first upload end to end, sign in as a creator, open Creat
 ## Final library layout verification
 
 The creator library, upload form, empty state, status areas, publish controls, and monetization checklist were rechecked in full-page desktop and mobile screenshots. The monetization step descriptions now align correctly instead of wrapping into the numbered marker column.
+
+## Deletion and playback metadata verification
+
+Each creator library now exposes an owner-scoped Delete control with an irreversible-action confirmation dialog, success feedback, failure feedback, and automatic library/metrics refresh. Uploads accept up to 15 normalized hashtags, and both library cards and public watch pages show the creator's description and hashtag chips. Legacy videos fall back to hashtag tokens found in their existing title or description. The real public `/watch/1` route was visually verified on desktop and mobile, and the full suite passes 14 tests.
+
+The persisted-record path is also covered: a dedicated record-builder test confirms that upload titles are trimmed and that creator descriptions, normalized hashtags, playback URLs, durations, and dimensions are included in the database insert payload. The complete suite now passes 15 tests.
+
+A rolled-back database integration test now inserts and reads a video through the real `videos` table, verifies the stored description and normalized hashtags, and intentionally rolls back. A follow-up database check confirmed zero `metadata-test-*` channels remained. The complete suite now passes 16 tests.

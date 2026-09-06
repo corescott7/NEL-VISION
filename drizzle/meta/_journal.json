@@ -29,6 +29,13 @@
       "when": 1788728205161,
       "tag": "0003_tough_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1788734224289,
+      "tag": "0004_mushy_klaw",
+      "breakpoints": true
     }
   ]
 }
