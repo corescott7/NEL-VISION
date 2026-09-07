@@ -36,3 +36,9 @@ Each creator library now exposes an owner-scoped Delete control with an irrevers
 The persisted-record path is also covered: a dedicated record-builder test confirms that upload titles are trimmed and that creator descriptions, normalized hashtags, playback URLs, durations, and dimensions are included in the database insert payload. The complete suite now passes 15 tests.
 
 A rolled-back database integration test now inserts and reads a video through the real `videos` table, verifies the stored description and normalized hashtags, and intentionally rolls back. A follow-up database check confirmed zero `metadata-test-*` channels remained. The complete suite now passes 16 tests.
+
+## App-wide logo sizing review
+
+The official logo artwork sits inside a substantially taller source canvas than the visible lockup requires. Enlarging only the header container increased whitespace as well as artwork, so the shared image treatment must crop the unused vertical canvas while preserving the complete horizontal wordmark. Desktop page headers and the role-login layout were reviewed before applying this containment correction.
+
+The shared logo container is now larger on desktop, tablet, mobile, and compact footer placements. The image uses a vertical-canvas crop that keeps the entire horizontal **NEL A VISION** wordmark, including the final N, visible while making the emblem and lettering materially larger. Homepage, Studio, advertiser, role-login, channel, and watch headers were verified at 1280×720 and 390×844; navigation remains usable at both breakpoints.

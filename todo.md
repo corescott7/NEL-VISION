@@ -91,3 +91,9 @@
 
 - [x] Test that creator descriptions and normalized hashtags are included in persisted video records
 - [x] Add a rolled-back database integration test that inserts and reads description and hashtag metadata
+
+## App-wide logo enlargement
+
+- [x] Increase the NEL A VISION logo size across all desktop page headers
+- [x] Increase the logo size on mobile without clipping the complete wordmark
+- [x] Verify header spacing and navigation remain usable throughout the app
